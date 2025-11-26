@@ -1,19 +1,21 @@
+# external imports
 from datetime import datetime, UTC
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List, TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+if TYPE_CHECKING:
+    from src.models.user import User
+    from src.models.message import Message
 
-from src.core.database import Base
 
+class ChatSession(SQLModel, table=True):
+    __tablename__ = "chat_sessions" # type: ignore
+    
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    user_id: int = Field(foreign_key="users.id")
+    started_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    ended_at: Optional[datetime] = Field(default=None)
+    title: Optional[str] = Field(default=None)
 
-class ChatSession(Base):
-    __tablename__ = "chat_sessions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    started_at = Column(DateTime(timezone=True), default=lambda : datetime.now(UTC))
-    ended_at = Column(DateTime(timezone=True), nullable=True)
-    title = Column(String, nullable=True)
-
-    user = relationship("User", back_populates="chat_sessions")
-    messages = relationship("Message", back_populates="chat_sessions", cascade="all, delete")
+    user: Optional["User"] = Relationship(back_populates="chat_sessions")
+    messages: List["Message"] = Relationship(back_populates="chat_session", sa_relationship_kwargs={"cascade": "all, delete"})

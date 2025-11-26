@@ -1,9 +1,8 @@
 import os
-from src.api.v1.ai_logic import app
+from src.agent.transaction_agent.agent import app
 from fastapi import APIRouter
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
-from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 

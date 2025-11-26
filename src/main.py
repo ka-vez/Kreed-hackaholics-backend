@@ -1,7 +1,14 @@
+# internal imports
+from src.api.v1 import chat
+from src.database.database import create_db_and_tables
+
+#external imports
 from fastapi import FastAPI
-from .api.v1 import chat
+
 
 app = FastAPI(title="BelAI")
+
+create_db_and_tables()
 
 app.include_router(chat.router)
 

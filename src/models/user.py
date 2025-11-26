@@ -1,20 +1,22 @@
+# internal imports
+
+# external imports
 from datetime import datetime, UTC
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List, TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import relationship
-
-from src.core.database import Base
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=False, unique=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+if TYPE_CHECKING:
+    from src.models.chat_session import ChatSession
+    from src.models.task import Task
 
 
-    chat_sessions = relationship("ChatSession", back_populates="user")
-    # tasks = relationship("Task", back_populates="user")
-    #
+class User(SQLModel, table=True):
+    __tablename__ = "users" # type: ignore
+    
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    username: str = Field(nullable=False, unique=True)
+    email: str = Field(unique=True, index=True, nullable=False)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    chat_sessions: List["ChatSession"] = Relationship(back_populates="user")
+    tasks: List["Task"] = Relationship(back_populates="user")

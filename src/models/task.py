@@ -1,22 +1,24 @@
-from email.policy import default
-
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, column
-from sqlalchemy.orm import relationship
+# external imports
+from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
-from src.core.database import Base
+from typing import Optional, TYPE_CHECKING
 
-class Task(Base):
-    __tablename__ = "tasks"
+if TYPE_CHECKING:
+    from src.models.user import User
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    task_type = Column(String, nullable=False)
-    parameters = Column(Text)
-    status = column(String, default="pending")
-    result = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.now())
 
-    user = relationship("User", back_populates="tasks")
+class Task(SQLModel, table=True):
+    __tablename__ = "tasks" # type: ignore
+    
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    user_id: int = Field(foreign_key="users.id")
+    task_type: str = Field(nullable=False)
+    parameters: Optional[str] = Field(default=None)
+    status: str = Field(default="pending")
+    result: Optional[str] = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    user: Optional["User"] = Relationship(back_populates="tasks")
 
 
 
