@@ -93,3 +93,74 @@ def confirm_system_content(transaction_details: str):
     "Sure thing. You are about to tranfer N10,000 to 2064350220 Kuda Bank. Is this correct?"
 
     Do not add any other information. Just present the summary and the question."""
+
+def answer_question_system_content():
+    return """You are Alat AI, a helpful and friendly Nigerian banking assistant for Wema Bank. You can transfer money for users, buy airtime and data and also help users check their account balance.
+
+    Your job is to answer general questions, provide information about banking services, and engage in friendly conversation with users.
+
+    Key information about Wema Bank:
+    - Wema Bank is one of Nigeria's oldest banks, established in 1945
+    - ALAT is Wema Bank's fully digital banking platform - Nigeria's first fully digital bank
+    - Services include: savings accounts, current accounts, loans, investments, bill payments, transfers
+    - ALAT features: zero account opening fees, no minimum balance, instant account opening, virtual cards
+
+    Guidelines:
+    - Be warm, friendly, and professional
+    - Use Nigerian-friendly language (e.g., "Sure thing!", "No problem!")
+    - Keep responses concise and helpful
+    - If asked about specific account details or transactions, politely explain you need them to use the transaction services
+    - For complex banking queries, suggest they contact customer service or visit a branch
+
+    Always respond in a helpful and conversational manner."""
+
+def action_confirmation_system_content(intent: str, user_input: str, slots: dict):
+    """Generate system prompt for confirming user's action intent.
+    
+    Args:
+        intent: The transaction intent (transfer_money, buy_airtime, buy_data, buy_electricity)
+        user_input: What the user said in response to confirmation
+        slots: Dictionary containing all the transaction parameters
+    
+    Returns:
+        System prompt instructing LLM to call appropriate tool if confirmed
+    """
+    
+    if intent == 'transfer_money':
+        tool_params = f"""- receipients_account_number: {slots['receipient_account_number']}
+- receipients_bank_name: {slots['receipient_bank_name']}
+- amount: {slots['amount']}"""
+        tool_name = "transfer_money"
+        transaction_desc = f"transfer N{slots['amount']} to {slots['receipient_account_number']} ({slots['receipient_bank_name']})"
+    
+    elif intent == 'buy_airtime':
+        tool_params = f"""- phone_number: {slots['phone_number']}
+- network: {slots['network']}
+- amount: {slots['amount']}"""
+        tool_name = "buy_airtime"
+        transaction_desc = f"purchase N{slots['amount']} {slots['network']} airtime for {slots['phone_number']}"
+    
+    elif intent == 'buy_data':
+        tool_params = f"""- phone_number: {slots['phone_number']}
+- network: {slots['network']}
+- amount: {slots['amount']}"""
+        tool_name = "buy_data"
+        transaction_desc = f"purchase N{slots['amount']} {slots['network']} data for {slots['phone_number']}"
+    
+    elif intent == 'buy_electricity':
+        tool_params = f"""- meter_number: {slots['meter_number']}
+- amount: {slots['amount']}"""
+        tool_name = "buy_electricity"
+        transaction_desc = f"purchase N{slots['amount']} electricity units for meter {slots['meter_number']}"
+    
+    else:
+        return "Invalid intent provided."
+    
+    return f"""The user was asked to confirm this transaction: {transaction_desc}
+        
+The user responded: "{user_input}"
+
+If the user confirmed (said yes, yeah, sure, confirm, ok, proceed, etc.), call the {tool_name} tool with these exact parameters:
+{tool_params}
+
+If the user declined or said no, respond with "Transaction cancelled." and do NOT call any tool."""

@@ -20,3 +20,9 @@ class AgentState(TypedDict):
     
     # The final message from a tool (e.g., "Success!" or "Error: Failed")
     tool_response: str
+
+    # permission to perfrom a task (basically using a tool)
+    use_tool: bool
+
+    # checks if the user entered in a wrong or right pin to perform a transaction
+    pin_verified: bool
