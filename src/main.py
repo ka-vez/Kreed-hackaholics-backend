@@ -8,7 +8,39 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 
-app = FastAPI(title="BelAI")
+app = FastAPI(
+    title="AlatAI",
+    description="""
+    AlatAI - Intelligent Banking Assistant API
+    
+    A sophisticated AI-powered banking assistant that enables users to perform financial transactions 
+    through natural language conversations. Built with LangGraph and Google Gemini AI.
+    
+    **Features:**
+    * 💬 Natural language transaction processing
+    * 💸 Money transfers between bank accounts
+    * 📱 Airtime and data purchases
+    * ⚡ Electricity bill payments
+    * 🔄 Real-time WebSocket communication
+    * 🤖 Intent classification and slot filling
+    * 🎯 Context-aware conversation management
+    
+    **Technology Stack:**
+    * FastAPI for high-performance API endpoints
+    * LangGraph for agent orchestration
+    * Google Gemini 2.0 Flash for natural language understanding
+    * WebSocket for real-time bidirectional communication
+    * SQLModel for database management
+    """,
+    version="1.0.0",
+    contact={
+        "name": "ALAT by Wema",
+        "url": "https://www.alat.ng",
+    },
+    license_info={
+        "name": "Proprietary",
+    },
+)
 
 # CORS configuration for production
 app.add_middleware(
