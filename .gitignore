@@ -13,4 +13,5 @@
 .pytest_cache
 faq.json
 *.db
+test.py
 diagram.ipynb

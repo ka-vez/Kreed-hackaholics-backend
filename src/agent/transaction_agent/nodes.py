@@ -49,13 +49,9 @@ def classify_and_fill(state: AgentState) -> dict:
     cause the `add_messages` reducer to append the AIMessage to the conversation.
     """
     messages = list(state['messages'])
-    if not messages:
-        user_input = input("👤 USER: ")
-        user_message = HumanMessage(content=user_input)
 
-    else:
-        user_input = input("👤 USER: ")
-        user_message = HumanMessage(content=user_input)
+    user_input = input("👤 USER: ")
+    user_message = HumanMessage(content=user_input)
     
     all_messages = [CLASSIFY_AND_FILL_SYSTEM_PROMPT] + list(state['messages']) + [user_message]
 
